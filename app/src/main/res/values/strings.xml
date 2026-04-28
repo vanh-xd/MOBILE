@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">K234112EApp</string>
+    <string name="str_welcome">Welcome to CUC CU</string>
+    <string name="str_say_hello">Hello TRAN DUY THANH</string>
+    <string name="str_clickme_to_say_hello">Say Hello babi</string>
+    <string name="str_login_system">Login System</string>
+    <string name="str_username">Username:</string>
+    <string name="str_hint_username">Enter your username</string>
+    <string name="str_password">Password:</string>
+    <string name="str_login">Login</string>
+    <string name="str_exit">Exit</string>
+    <string name="str_hint_password">Enter your password:</string>
+    <string name="str_login_success">Login success</string>
+    <string name="str_login_failed">Login failed</string>
+</resources>
