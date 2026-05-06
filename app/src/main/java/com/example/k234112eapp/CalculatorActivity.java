@@ -37,7 +37,20 @@ public class CalculatorActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        btnDel.setOnClickListener(new View.OnClickListener() {...});
+        btnDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get current data;
+                String current_data=edtFormula.getText().toString();
+                //remove last character
+                String new_value="";
+                if(current_data.length()>1)
+                {
+                    new_value=current_data.substring(0,current_data.length()-1);
+                }
+                edtFormula.setText(new_value);
+            }
+        });
 
         btn_equal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,8 +66,8 @@ public class CalculatorActivity extends AppCompatActivity {
     });
 
         m_onclick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+         @Override
+         public void onClick(View view) {
             if(view.equals(txtM))
             {
                 //khach hang nhan txtM
@@ -62,7 +75,23 @@ public class CalculatorActivity extends AppCompatActivity {
             else if (view.equals(txtMMinus))
             {
                 // khach hang nhan txtMMinus
-            } // kh dung dau == de so sanh vi no kh hieu so sanh o nho khi dung ==
+            }
+            else if (view.equals(txtMPlus))
+            {
+                // khach hang nhan txtMPlus
+            }
+            else if (view.equals(txtMR))
+            {
+                // khach hang nhan txtMR
+            }
+            else if (view.equals(txtMS))
+            {
+                // khach hang nhan txtMS
+            }
+            else if (view.equals(txtMC))
+            {
+                // khach hang nhan txtMC
+            }// kh dung dau == de so sanh vi no kh hieu so sanh o nho khi dung ==
         }
         };
         // m_onclick la bien co kha nang sinh su kien var as listener
