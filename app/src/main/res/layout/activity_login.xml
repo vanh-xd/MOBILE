@@ -31,6 +31,7 @@
         android:textSize="20sp" />
 
     <EditText
+        android:text="admin"
         android:id="@+id/edtUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
         android:textSize="20sp" />
 
     <EditText
+        android:text="123"
         android:id="@+id/edtPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
