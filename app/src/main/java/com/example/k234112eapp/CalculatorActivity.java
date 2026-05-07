@@ -1,5 +1,6 @@
 package com.example.k234112eapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ public class CalculatorActivity extends AppCompatActivity {
     EditText edtFormula;
     Button btnDel, btn_equal;
     TextView txtMC, txtMR, txtMPlus, txtMMinus, txtMS, txtM;
+    String name_share_pref = "CalcInfo";
 
     View.OnClickListener m_onclick;
 
@@ -54,16 +56,30 @@ public class CalculatorActivity extends AppCompatActivity {
 
         btn_equal.setOnClickListener(new View.OnClickListener() {
             @Override
-                    public void onClick(View view){
-                // setp 1 get data
-            String formular = edtFormula.getText().toString();
+            public void onClick(View view){
+                // step 1 get data
+                String formula = edtFormula.getText().toString();
             // step 2 invoke library for formular (find internet)...
-            String result = "";
-            // result = library_nao_do(formular)
-            // step3
-            edtFormula.setText(result);
-        }
-    });
+                try {
+                    double result = evaluate(formula.replace(":", "/")); // Đổi dấu : thành / để tính toán
+
+                    // Bước 3: Hiển thị kết quả
+                    if (result == (long) result)
+                        edtFormula.setText(String.format("%d", (long) result));
+                    else
+                        edtFormula.setText(String.valueOf(result));
+                } catch (Exception e) {
+                    edtFormula.setText("Error");
+                }
+            }
+        });
+
+        findViewById(R.id.btn_dot).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processInputData(v); // Sử dụng lại hàm "có sẵn" của bạn
+            }
+        });
 
         m_onclick = new View.OnClickListener() {
          @Override
@@ -128,5 +144,79 @@ public class CalculatorActivity extends AppCompatActivity {
         String new_value = old_value + input_value;
         // show value for customer:
         edtFormula.setText(new_value);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences preferences = getSharedPreferences(name_share_pref, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("LastFormula", edtFormula.getText().toString());
+        editor.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences preferences = getSharedPreferences(name_share_pref, MODE_PRIVATE);
+        String lastFormula = preferences.getString("LastFormula", "");
+        edtFormula.setText(lastFormula);
+    }
+
+    private double evaluate(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+
+            double parse() {
+                nextChar();
+                return parseExpression();
+            }
+
+            double parseExpression() {
+                double x = parseTerm();
+                for (; ; ) {
+                    if (eat('+')) x += parseTerm();
+                    else if (eat('-')) x -= parseTerm();
+                    else return x;
+                }
+            }
+
+            double parseTerm() {
+                double x = parseFactor();
+                for (; ; ) {
+                    if (eat('*')) x *= parseFactor();
+                    else if (eat('/')) x /= parseFactor();
+                    else return x;
+                }
+            }
+
+            double parseFactor() {
+                if (eat('+')) return parseFactor();
+                if (eat('-')) return -parseFactor();
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) {
+                    x = parseExpression();
+                    eat(')');
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') {
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else throw new RuntimeException("Unexpected: " + (char) ch);
+                return x;
+            }
+        }.parse();
     }
 }
