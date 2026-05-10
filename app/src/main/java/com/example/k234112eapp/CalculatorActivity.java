@@ -72,6 +72,56 @@ public class CalculatorActivity extends AppCompatActivity {
                     edtFormula.setText("Error");
                 }
             }
+
+            private void addEvents() {
+                // ... (giữ nguyên btnDel, btn_equal)
+
+                // Bổ sung sự kiện cho nút C và CE (Xóa hết)
+                findViewById(R.id.btnC).setOnClickListener(v -> edtFormula.setText(""));
+                findViewById(R.id.btnCE).setOnClickListener(v -> edtFormula.setText(""));
+
+                // Nút dấu chấm (.)
+                findViewById(R.id.btn_dot).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        processInputData(v);
+                    }
+                });
+
+                // ... (giữ nguyên m_onclick và phần gán cho txtM...)
+            }
+
+            // Hàm kiểm tra xem một ký tự có phải toán tử không
+            private boolean isOperator(String s) {
+                return s.equals("+") || s.equals("-") || s.equals("*") || s.equals(":");
+            }
+
+            public void processInputData(View view) {
+                Button btn_clicked = (Button) view;
+                String old_value = edtFormula.getText().toString();
+                String input_value = btn_clicked.getText().toString();
+
+                // Nếu đang hiển thị lỗi, xóa đi trước khi nhập mới
+                if (old_value.equals("Error")) {
+                    old_value = "";
+                }
+
+                // Kiểm tra tránh nhập liên tiếp 2 toán tử (Ví dụ ++ hoặc +*)
+                if (isOperator(input_value) && !old_value.isEmpty()) {
+                    String lastChar = old_value.substring(old_value.length() - 1);
+                    if (isOperator(lastChar)) {
+                        // Thay thế toán tử cũ bằng toán tử mới nhất vừa nhấn
+                        old_value = old_value.substring(0, old_value.length() - 1);
+                    }
+                }
+
+                // Tránh bắt đầu biểu thức bằng các dấu *, :, + (dấu - thì có thể cho phép số âm)
+                if (old_value.isEmpty() && (input_value.equals("*") || input_value.equals(":") || input_value.equals("+"))) {
+                    return;
+                }
+
+                edtFormula.setText(old_value + input_value);
+            }
         });
 
         findViewById(R.id.btn_dot).setOnClickListener(new View.OnClickListener() {
