@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else {
-            Intent intent = new Intent(LoginActivity.this, EmployeeManagementActivity.class);
+            Intent intent = new Intent(LoginActivity.this, EmployeeAdvancedManagementActivity.class);
             startActivity(intent);
         }}
     }

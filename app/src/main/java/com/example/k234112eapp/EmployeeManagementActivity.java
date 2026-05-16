@@ -29,7 +29,7 @@ public class EmployeeManagementActivity extends AppCompatActivity {
     ArrayAdapter<String>adapterEmployee;
     EditText edtId, edtName, edtPhone;
     int selectedPosition = -1; // Lưu vị trí nhân viên đang được chọn
-    int selectedPosition = -1; // Biến lưu vị trí nhân viên đang được chọn
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
