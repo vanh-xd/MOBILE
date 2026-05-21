@@ -17,6 +17,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.k234112eapp.models.ListUserAccount;
+import com.example.k234112eapp.models.UserAccount;
+
 public class LoginActivity extends AppCompatActivity {
 
     /*
@@ -54,6 +57,39 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginSystem(View view) {
+        String username = edtUserName.getText().toString();
+        String password = edtPassword.getText().toString();
+
+        UserAccount uc = ListUserAccount.login(username, password);
+        if (uc != null)
+        {
+            boolean saved = chkSaveLogin.isChecked();
+            SharedPreferences preferences = getSharedPreferences(name_share_pref, MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("UserName", username);
+            editor.putString("Password", password);
+            editor.putBoolean("Saved", saved);
+            editor.commit();
+
+            txtMessage.setText(getString(R.string.str_login_success));
+            if(radAdmin.isChecked()){
+                //phai ktra account nay co quyen admin hay kh (later)
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("USER_LOGIN", uc);
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(LoginActivity.this, EmployeeAdvancedManagementActivity.class);
+                startActivity(intent);
+            }
+        }
+        else
+        {
+            txtMessage.setText(getString(R.string.str_login_failed));
+        }
+    }
+
+    public void loginSystemOld(View view) {
         String username = edtUserName.getText().toString();
         String password = edtPassword.getText().toString();
         if (username.equalsIgnoreCase("admin") &&

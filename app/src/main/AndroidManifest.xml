@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.K234112EApp">
         <activity
+            android:name=".AddEmployeeActivity"
+            android:exported="false" />
+        <activity
             android:name=".EmployeeAdvancedManagementActivity"
             android:exported="false" />
         <activity

@@ -18,8 +18,9 @@
             android:orientation="vertical" >
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/txtWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
                 android:text="Welcome K234112E"
                 android:textColor="#F44336"
                 android:textSize="34sp" />
