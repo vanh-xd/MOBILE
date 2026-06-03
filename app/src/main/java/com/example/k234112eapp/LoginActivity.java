@@ -74,7 +74,8 @@ public class LoginActivity extends AppCompatActivity {
             txtMessage.setText(getString(R.string.str_login_success));
             if(radAdmin.isChecked()){
                 //phai ktra account nay co quyen admin hay kh (later)
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, OrderManagementActivity.class);
                 intent.putExtra("USER_LOGIN", uc);
                 startActivity(intent);
             }

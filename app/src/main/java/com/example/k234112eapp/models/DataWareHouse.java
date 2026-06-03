@@ -114,6 +114,10 @@ public class DataWareHouse {
         ArrayList<Order> orders = new ArrayList<>();
         ArrayList<Employee> employees = getEmployees();
         ArrayList<Customer> customers = getCustomers();
+        OrderStatus[] statuses = {OrderStatus.COMPLETED,
+                OrderStatus.NOT_PAYMENT,
+                OrderStatus.ON_LOGISTIC,
+                OrderStatus.CUSTOMER_COMPLAIN};
 
         for (int i = 1; i <= 100; i++) {
             Calendar cal = Calendar.getInstance();
@@ -132,16 +136,97 @@ public class DataWareHouse {
             String empId = employees.get(i % employees.size()).getId();
             String cusId = customers.get(i % customers.size()).getCustomerId();
 
-            orders.add(new Order("o" + i, empId, cusId, cal.getTime()));
+            // Chọn trạng thái xoay vòng
+            OrderStatus status = statuses[i % statuses.length];
+
+            orders.add(new Order("o" + i, empId, cusId, cal.getTime(), status));
         }
 
         return orders;
     }
-    public static ArrayList<OrderDetail> getOrderDetails(ArrayList<Order> orders, ArrayList<Product> products)
+    public static ArrayList<OrderDetail> getOrderDetails()
     {
+        ArrayList<Order> orders = getOrders();
+        ArrayList<Product> products = getProducts();
         ArrayList<OrderDetail> orderDetails = new ArrayList<>();
+        int detailCounter = 1;
 
-        Order od0 = orders.get(0);
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
+            // Số lượng chi tiết cho mỗi hóa đơn từ 1 đến 10
+            int numDetails = (i % 10) + 1;
+            
+            for (int j = 0; j < numDetails; j++) {
+                // Chọn sản phẩm xoay vòng để phủ hết danh sách sản phẩm
+                Product product = products.get((i + j) % products.size());
+                
+                String odId = "od" + detailCounter++;
+                int quantity = ((i + j) % 5) + 1;
+                double price = product.getPrice();
+                
+                // Coupon và VAT chia sẵn cho 100 theo yêu cầu
+                double coupon = ((i + j) % 15) / 100.0; // Từ 0.00 đến 0.14 (0% - 14%)
+                double VAT = product.getVAT(); // Sử dụng VAT của sản phẩm (ví dụ 0.05 hoặc 0.1)
+
+                orderDetails.add(new OrderDetail(
+                        odId,
+                        order.getOrderId(),
+                        product.getProductId(),
+                        quantity,
+                        price,
+                        coupon,
+                        VAT
+                ));
+            }
+        }
+        
         return orderDetails;
+    }
+    public static double sumOfMoney(Order od)
+    {
+        double sum = 0;
+        ArrayList<OrderDetail> orderDetails = getOrderDetails();
+        for (OrderDetail detail : orderDetails) {
+            if (detail.getOrderId().equals(od.getOrderId())) {
+                double amount = detail.getQuantity() * detail.getPrice();
+                double afterCoupon = amount * (1 - detail.getCoupon());
+                double totalPerLine = afterCoupon * (1 + detail.getVAT());
+                sum += totalPerLine;
+            }
+        }
+        return sum;
+    }
+    public static ArrayList<Order> filterOrdersByDate(Date fromDate, Date toDate)
+    {
+        ArrayList<Order> orders = getOrders();
+        ArrayList<Order> result_filter = new ArrayList<>();
+
+        // Chuẩn hóa fromDate về đầu ngày (00:00:00)
+        Calendar calFrom = Calendar.getInstance();
+        calFrom.setTime(fromDate);
+        calFrom.set(Calendar.HOUR_OF_DAY, 0);
+        calFrom.set(Calendar.MINUTE, 0);
+        calFrom.set(Calendar.SECOND, 0);
+        calFrom.set(Calendar.MILLISECOND, 0);
+        long fromTime = calFrom.getTimeInMillis();
+
+        // Chuẩn hóa toDate về cuối ngày (23:59:59)
+        Calendar calTo = Calendar.getInstance();
+        calTo.setTime(toDate);
+        calTo.set(Calendar.HOUR_OF_DAY, 23);
+        calTo.set(Calendar.MINUTE, 59);
+        calTo.set(Calendar.SECOND, 59);
+        calTo.set(Calendar.MILLISECOND, 999);
+        long toTime = calTo.getTimeInMillis();
+
+        for (Order od : orders) {
+            long orderTime = od.getOrderDate().getTime();
+            // So sánh trong khoảng thời gian đã chuẩn hóa (bao gồm cả fromDate và toDate)
+            if (orderTime >= fromTime && orderTime <= toTime) {
+                result_filter.add(od);
+            }
+        }
+
+        return result_filter;
     }
 }

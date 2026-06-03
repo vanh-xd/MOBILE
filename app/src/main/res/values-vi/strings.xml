@@ -31,6 +31,12 @@
     <string name="str_department">Department</string>
     <string name="str_list_employee">List Employee</string>
     <string name="str_birthplace">Nơi sinh:</string>
+    <string name="str_order_report">Order Report</string>
+    <string name="str_oder_status_all">All Status</string>
+    <string name="str_order_status_completed">Completed</string>
+    <string name="str_order_status_not_payment">Not Payment</string>
+    <string name="str_order_status_on_logistic">On Logistic</string>
+    <string name="str_order_status_customer_complain">Customer Complain</string>
     <string-array name="array_birthplace">
         <item>An Giang</item>
         <item>Bà Rịa - Vũng Tàu</item>
