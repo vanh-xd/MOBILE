@@ -32,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     String name_share_pref = "LoginInfo";
     RadioButton radAdmin, radEmployee;
 
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
